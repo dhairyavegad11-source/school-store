@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CampusMerch - Student Merchandise & Creator Marketplace</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0f3ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#1e1b4b'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Font & FontAwesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    /* Custom Scrollbar Styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #475569;
+    }
+    .custom-gradient-text {
+      background: linear-gradient(135deg, #818cf8 0%, #c084fc 50%, #f472b6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-indigo-500 selection:text-white">
+
+  <!-- Announcement Header -->
+  <div class="bg-gradient-to-r from-indigo-700 via-purple-700 to-pink-600 text-white text-xs py-2 px-4 text-center font-medium shadow-sm flex justify-center items-center gap-2">
+    <span class="bg-white/20 text-white px-2 py-0.5 rounded-full font-bold text-[10px] uppercase">Campus Fall Drop</span>
+    <span>Support local student clubs! 100% of profits fund campus activities. Use code <strong class="underline decoration-wavy">CAMPUS10</strong> for 10% off.</span>
+  </div>
+
+  <!-- Header Navigation -->
+  <header class="sticky top-0 z-40 backdrop-blur-xl bg-slate-950/80 border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('shop')">
+        <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 p-0.5 shadow-lg shadow-indigo-500/20">
+          <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
+            <i class="fa-solid fa-graduation-cap text-indigo-400 text-xl"></i>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <span class="font-extrabold text-xl tracking-tight custom-gradient-text">CampusMerch</span>
+            <span class="text-[10px] uppercase tracking-wider font-extrabold bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded-full border border-indigo-500/30">Hub</span>
+          </div>
+          <p class="text-xs text-slate-400">By Students • For Campus</p>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="hidden md:flex items-center p-1 bg-slate-900/90 rounded-2xl border border-slate-800/80">
+        <button id="nav-shop" onclick="switchTab('shop')" class="nav-btn flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md shadow-indigo-500/20">
+          <i class="fa-solid fa-store"></i>
+          <span>Marketplace</span>
+        </button>
+
+        <button id="nav-studio" onclick="switchTab('studio')" class="nav-btn flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 text-slate-400 hover:text-white hover:bg-slate-800/60">
+          <i class="fa-solid fa-wand-magic-sparkles text-pink-400"></i>
+          <span>Design Studio</span>
+        </button>
+
+        <button id="nav-dashboard" onclick="switchTab('dashboard')" class="nav-btn flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 text-slate-400 hover:text-white hover:bg-slate-800/60">
+          <i class="fa-solid fa-chart-line text-emerald-400"></i>
+          <span>Club Fundraising</span>
+        </button>
+      </nav>
+
+      <!-- Cart Trigger & Actions -->
+      <div class="flex items-center gap-3">
+        <button onclick="toggleCart(true)" class="relative p-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-200 hover:text-white transition group">
+          <i class="fa-solid fa-cart-shopping text-indigo-400 text-lg group-hover:scale-110 transition-transform"></i>
+          <span id="cart-badge-count" class="hidden absolute -top-1.5 -right-1.5 bg-pink-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-slate-950 animate-pulse">0</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Bar -->
+    <div class="md:hidden flex border-t border-slate-800/80 bg-slate-950 px-2 py-2 justify-around text-xs">
+      <button onclick="switchTab('shop')" id="mobile-nav-shop" class="mobile-nav-btn flex flex-col items-center gap-1 px-3 py-1.5 rounded-lg text-indigo-400 font-bold bg-slate-900">
+        <i class="fa-solid fa-store text-base"></i>
+        <span>Store</span>
+      </button>
+      <button onclick="switchTab('studio')" id="mobile-nav-studio" class="mobile-nav-btn flex flex-col items-center gap-1 px-3 py-1.5 rounded-lg text-slate-400">
+        <i class="fa-solid fa-wand-magic-sparkles text-base"></i>
+        <span>Studio</span>
+      </button>
+      <button onclick="switchTab('dashboard')" id="mobile-nav-dashboard" class="mobile-nav-btn flex flex-col items-center gap-1 px-3 py-1.5 rounded-lg text-slate-400">
+        <i class="fa-solid fa-chart-line text-base"></i>
+        <span>Fundraising</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <!-- VIEW 1: STOREFRONT MARKETPLACE -->
+    <section id="view-shop" class="space-y-8">
+      
+      <!-- Hero Banner -->
+      <div class="relative rounded-3xl overflow-hidden bg-gradient-to-br from-indigo-950 via-slate-900 to-purple-950 border border-slate-800 p-8 sm:p-12 shadow-2xl">
+        <div class="absolute -top-12 -right-12 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-12 left-1/3 w-80 h-80 bg-pink-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        
+        <div class="relative z-10 max-w-2xl space-y-4">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-semibold">
+            <i class="fa-solid fa-fire text-amber-400"></i>
+            <span>Official Student Gear & Fundraising Market</span>
+          </div>
+          
+          <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight text-white">
+            <span class="text-3xl sm:text-5xl font-black tracking-tight leading-tight text-white block">Designed by Students.</span>
+            <span class="custom-gradient-text text-3xl sm:text-5xl font-black tracking-tight leading-tight">Driven by Campus Pride.</span>
+          </h1>
+
+          <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+            Buy authentic merchandise designed by high school and college clubs, athletic teams, and creators. All proceeds fund senior trips, competitions, and student initiatives!
+          </p>
+
+          <div class="pt-2 flex flex-wrap gap-3">
+            <button onclick="switchTab('studio')" class="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm transition shadow-lg shadow-indigo-600/30 flex items-center gap-2">
+              <i class="fa-solid fa-plus-circle"></i>
+              <span>Create Your Own Merch</span>
+            </button>
+            <a href="#catalog" class="px-6 py-3 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-700 text-slate-200 font-semibold text-sm transition flex items-center gap-2">
+              <span>Explore Catalog</span>
+              <i class="fa-solid fa-arrow-down text-slate-400"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls & Filter Toolbar -->
+      <div id="catalog" class="space-y-6">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-slate-900/60 p-4 rounded-2xl border border-slate-800/80">
+          
+          <!-- Search Bar -->
+          <div class="relative flex-1 min-w-[260px]">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+            <input
+              type="text"
+              id="search-input"
+              oninput="applyFilters()"
+              placeholder="Search hoodie, robotics, esports, class of 2026..."
+              class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition"
+            />
+          </div>
+
+          <!-- Dropdown Controls -->
+          <div class="flex flex-wrap items-center gap-3">
+            
+            <!-- School / Club Filter -->
+            <select id="filter-club" onchange="applyFilters()" class="bg-slate-950 border border-slate-800 text-slate-300 text-xs sm:text-sm rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-indigo-500 cursor-pointer">
+              <option value="ALL">All Campus Clubs & Classes</option>
+              <option value="Robotics Team">Robotics Team</option>
+              <option value="Class of 2026">Senior Class of 2026</option>
+              <option value="Esports League">Esports League</option>
+              <option value="Drama Guild">Drama Guild</option>
+              <option value="Eco Club">Eco & Sustainability Club</option>
+              <option value="Art Honor Society">Art Honor Society</option>
+            </select>
+
+            <!-- Sort By Filter -->
+            <select id="filter-sort" onchange="applyFilters()" class="bg-slate-950 border border-slate-800 text-slate-300 text-xs sm:text-sm rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-indigo-500 cursor-pointer">
+              <option value="popular">Most Popular</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="fundraise">Highest Club Profit</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Category Pill Buttons -->
+        <div id="category-pills" class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+          <!-- Dynamically populated -->
+        </div>
+
+        <!-- Product Grid List -->
+        <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Dynamically Populated by JS -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="hidden text-center py-20 bg-slate-900/30 rounded-3xl border border-dashed border-slate-800 space-y-4">
+          <i class="fa-solid fa-box-open text-4xl text-slate-600"></i>
+          <h3 class="text-lg font-bold text-slate-300">No merchandise found</h3>
+          <p class="text-slate-500 text-sm max-w-md mx-auto">Try clearing your search keyword or selecting a different category filter.</p>
+          <button onclick="resetFilters()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-xl text-slate-200 transition">
+            Reset Filters
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 2: INTERACTIVE DESIGN STUDIO & CREATOR MOCKUP -->
+    <section id="view-studio" class="hidden space-y-8">
+      
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-800">
+        <div>
+          <div class="inline-flex items-center gap-2 text-pink-400 text-xs font-bold uppercase tracking-wider mb-1">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <span>Student Apparel Visualizer</span>
+          </div>
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-white">Create & Sell Custom Merch</h1>
+          <p class="text-slate-400 text-sm">Design custom apparel for your club or sports team, calculate fundraising profit, and launch instantly.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Studio Mockup Canvas Preview -->
+        <div class="lg:col-span-6 bg-slate-900/60 p-6 sm:p-8 rounded-3xl border border-slate-800 flex flex-col items-center justify-center space-y-6">
+          <div class="text-xs text-slate-400 font-semibold flex items-center gap-2">
+            <i class="fa-solid fa-eye text-indigo-400"></i>
+            <span>Real-time Interactive Canvas Mockup</span>
+          </div>
+
+          <!-- Interactive Garment Preview Container -->
+          <div id="studio-canvas" class="relative w-full max-w-sm aspect-square rounded-2xl flex items-center justify-center p-8 transition-colors duration-300 shadow-2xl border border-slate-700/50 overflow-hidden bg-slate-900">
+            
+            <!-- Apparel Silhouette SVG / Icon Backing -->
+            <div id="studio-apparel-icon" class="absolute inset-0 flex items-center justify-center opacity-20 pointer-events-none text-[180px] text-white">
+              <i class="fa-solid fa-shirt"></i>
+            </div>
+
+            <!-- Custom Artwork & Design Overlay -->
+            <div id="studio-graphic-box" class="relative z-10 text-center p-6 border-2 border-dashed border-white/20 rounded-xl bg-black/30 backdrop-blur-xs max-w-[85%] w-full">
+              <span id="studio-preview-school" class="block text-xs uppercase tracking-widest font-bold opacity-80 mb-1 text-slate-200">
+                WESTBRIDGE HIGH
+              </span>
+              <h2 id="studio-preview-text" class="text-2xl sm:text-3xl font-black tracking-tight uppercase break-words leading-none text-white">
+                ROBOTICS '26
+              </h2>
+              <div id="studio-preview-logo" class="mt-3 text-2xl text-amber-400">
+                <i class="fa-solid fa-robot"></i>
+              </div>
+            </div>
+
+            <div class="absolute bottom-3 right-3 text-[10px] bg-slate-950/80 text-slate-300 px-2.5 py-1 rounded-lg border border-slate-800 font-semibold">
+              <span id="studio-preview-tag">Hoodie • Sample</span>
+            </div>
+          </div>
+
+          <!-- Profit Calculation Box -->
+          <div class="w-full bg-slate-950 p-5 rounded-2xl border border-slate-800 space-y-3">
+            <div class="flex items-center justify-between text-xs font-bold text-slate-400">
+              <span>FUNDRAISING MARGIN CALCULATOR</span>
+              <span class="text-emerald-400"><i class="fa-solid fa-shield-halved"></i> 100% Club Proceeds</span>
+            </div>
+            <div class="grid grid-cols-3 gap-3 text-center">
+              <div class="bg-slate-900 p-3 rounded-xl border border-slate-800">
+                <p class="text-[10px] text-slate-500 font-bold uppercase">Listing Price</p>
+                <p id="calc-price" class="text-lg font-black text-white">$45.00</p>
+              </div>
+              <div class="bg-slate-900 p-3 rounded-xl border border-slate-800">
+                <p class="text-[10px] text-slate-500 font-bold uppercase">Base Item Cost</p>
+                <p id="calc-cost" class="text-lg font-black text-slate-400">$20.00</p>
+              </div>
+              <div class="bg-emerald-950/40 p-3 rounded-xl border border-emerald-500/30">
+                <p class="text-[10px] text-emerald-400 font-bold uppercase">Club Profit / Unit</p>
+                <p id="calc-profit" class="text-lg font-black text-emerald-400">+$25.00</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Studio Controls & Listing Details -->
+        <div class="lg:col-span-6 bg-slate-900/40 p-6 sm:p-8 rounded-3xl border border-slate-800 space-y-5">
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-sliders text-indigo-400"></i>
+            <span>Design Settings & Information</span>
+          </h3>
+
+          <form id="creator-form" onsubmit="publishStudioItem(event)" class="space-y-4">
+            
+            <!-- Title -->
+            <div>
+              <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Merchandise Title</label>
+              <input type="text" id="studio-title" required value="Robotics State Finals Hoodie" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-indigo-500 focus:outline-none" />
+            </div>
+
+            <!-- School & Club -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-300 uppercase mb-1">School Name</label>
+                <input type="text" id="studio-school" required value="Westbridge High" oninput="updateStudioPreview()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-indigo-500 focus:outline-none" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Club / Organization</label>
+                <input type="text" id="studio-club" required value="Robotics Team" oninput="updateStudioPreview()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-indigo-500 focus:outline-none" />
+              </div>
+            </div>
+
+            <!-- Item Type & Garment Color Picker -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Apparel Item</label>
+                <select id="studio-category" onchange="updateStudioPreview()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-indigo-500 focus:outline-none cursor-pointer">
+                  <option value="Hoodies">Hoodie ($20 base)</option>
+                  <option value="T-Shirts">T-Shirt ($12 base)</option>
+                  <option value="Caps">Cap ($10 base)</option>
+                  <option value="Tote Bags">Tote Bag ($8 base)</option>
+                  <option value="Drinkware">Water Bottle ($12 base)</option>
+                  <option value="Stickers">Sticker Pack ($3 base)</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Base Garment Color</label>
+                <div class="flex items-center gap-2 pt-1">
+                  <button type="button" onclick="setStudioColor('#090d16')" class="w-7 h-7 rounded-full bg-slate-950 border-2 border-indigo-400 ring-2 ring-indigo-500/50"></button>
+                  <button type="button" onclick="setStudioColor('#1e3a8a')" class="w-7 h-7 rounded-full bg-blue-900 border border-slate-700"></button>
+                  <button type="button" onclick="setStudioColor('#991b1b')" class="w-7 h-7 rounded-full bg-red-900 border border-slate-700"></button>
+                  <button type="button" onclick="setStudioColor('#065f46')" class="w-7 h-7 rounded-full bg-emerald-900 border border-slate-700"></button>
+                  <button type="button" onclick="setStudioColor('#581c87')" class="w-7 h-7 rounded-full bg-purple-900 border border-slate-700"></button>
+                  <button type="button" onclick="setStudioColor('#f8fafc')" class="w-7 h-7 rounded-full bg-slate-100 border border-slate-700"></button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Print Artwork Text & Graphic Icon Select -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Artwork Front Text</label>
+                <input type="text" id="studio-text" required value="ROBOTICS '26" oninput="updateStudioPreview()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-indigo-500 focus:outline-none" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Emblem / Icon Accent</label>
+                <select id="studio-icon" onchange="updateStudioPreview()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-indigo-500 focus:outline-none cursor-pointer">
+                  <option value="fa-robot">Robot Gear 🤖</option>
+                  <option value="fa-trophy">Champion Trophy 🏆</option>
+                  <option value="fa-graduation-cap">Graduation Cap 🎓</option>
+                  <option value="fa-gamepad">Esports Controller 🎮</option>
+                  <option value="fa-masks-theater">Drama Theater 🎭</option>
+                  <option value="fa-leaf">Eco Leaf 🌿</option>
+                  <option value="fa-palette">Art Palette 🎨</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Listing Price Slider -->
+            <div>
+              <div class="flex justify-between items-center mb-1">
+                <label class="text-xs font-bold text-slate-300 uppercase">Set Listing Retail Price ($)</label>
+                <span id="price-slider-val" class="text-sm font-extrabold text-indigo-400">$45.00</span>
+              </div>
+              <input type="range" id="studio-price" min="15" max="80" value="45" oninput="updateStudioPreview()" class="w-full accent-indigo-500 bg-slate-800 rounded-lg cursor-pointer" />
+            </div>
+
+            <!-- Creator / Lead Name -->
+            <div>
+              <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Student Creator / Leader Name</label>
+              <input type="text" id="studio-creator" required value="Alex Rivera (Class VP)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-indigo-500 focus:outline-none" />
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="w-full py-4 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 text-white font-black text-base shadow-lg shadow-indigo-600/30 transition duration-200 flex items-center justify-center gap-2">
+              <i class="fa-solid fa-rocket"></i>
+              <span>Publish Listing to Live Marketplace</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 3: CLUB FUNDRAISING DASHBOARD -->
+    <section id="view-dashboard" class="hidden space-y-8">
+      
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-800">
+        <div>
+          <div class="inline-flex items-center gap-2 text-emerald-400 text-xs font-bold uppercase tracking-wider mb-1">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>Live Campus Revenue Tracker</span>
+          </div>
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-white">Student Fundraising Dashboard</h1>
+          <p class="text-slate-400 text-sm">Monitor merchandise sales performance and financial goals across active campus organizations.</p>
+        </div>
+      </div>
+
+      <!-- KPI Summary Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        
+        <div class="bg-slate-900/70 p-6 rounded-2xl border border-slate-800 space-y-2">
+          <div class="flex items-center justify-between text-slate-400 text-xs font-bold uppercase">
+            <span>Total Funds Raised</span>
+            <i class="fa-solid fa-dollar-sign text-emerald-400"></i>
+          </div>
+          <p id="dash-total-raised" class="text-3xl font-black text-white">$2,840.50</p>
+          <span class="text-[11px] text-emerald-400 font-semibold flex items-center gap-1">
+            <i class="fa-solid fa-arrow-trend-up"></i>
+            <span>+24.5% this month</span>
+          </span>
+        </div>
+
+        <div class="bg-slate-900/70 p-6 rounded-2xl border border-slate-800 space-y-2">
+          <div class="flex items-center justify-between text-slate-400 text-xs font-bold uppercase">
+            <span>Units Sold</span>
+            <i class="fa-solid fa-box text-indigo-400"></i>
+          </div>
+          <p id="dash-units-sold" class="text-3xl font-black text-white">186 Units</p>
+          <span class="text-[11px] text-slate-400">Across 6 student campaigns</span>
+        </div>
+
+        <div class="bg-slate-900/70 p-6 rounded-2xl border border-slate-800 space-y-2">
+          <div class="flex items-center justify-between text-slate-400 text-xs font-bold uppercase">
+            <span>Participating Clubs</span>
+            <i class="fa-solid fa-users text-pink-400"></i>
+          </div>
+          <p class="text-3xl font-black text-white">6 Clubs</p>
+          <span class="text-[11px] text-indigo-400">High School & Campus wide</span>
+        </div>
+
+        <div class="bg-slate-900/70 p-6 rounded-2xl border border-slate-800 space-y-2">
+          <div class="flex items-center justify-between text-slate-400 text-xs font-bold uppercase">
+            <span>Next Campus Payout</span>
+            <i class="fa-solid fa-calendar-check text-amber-400"></i>
+          </div>
+          <p class="text-3xl font-black text-white">Friday</p>
+          <span class="text-[11px] text-slate-400">Direct deposit to Student Union</span>
+        </div>
+      </div>
+
+      <!-- Live Active Campaign Progress Bars -->
+      <div class="bg-gradient-to-r from-slate-900 via-indigo-950/40 to-slate-900 p-6 sm:p-8 rounded-3xl border border-slate-800 space-y-6">
+        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-bullseye text-pink-400"></i>
+          <span>Active Club Fundraising Goals</span>
+        </h3>
+
+        <!-- Goal 1 -->
+        <div class="space-y-2">
+          <div class="flex justify-between text-sm font-bold">
+            <span class="text-slate-200">🤖 Robotics Team • State Championship Travel Fund</span>
+            <span class="text-emerald-400">$820 raised / $1,000 goal (82%)</span>
+          </div>
+          <div class="w-full bg-slate-950 h-3.5 rounded-full overflow-hidden p-0.5 border border-slate-800">
+            <div class="bg-gradient-to-r from-indigo-500 to-emerald-400 h-full rounded-full" style="width: 82%"></div>
+          </div>
+        </div>
+
+        <!-- Goal 2 -->
+        <div class="space-y-2">
+          <div class="flex justify-between text-sm font-bold">
+            <span class="text-slate-200">🎓 Senior Class of 2026 • Graduation & Prom Committee</span>
+            <span class="text-emerald-400">$1,450 raised / $2,000 goal (72.5%)</span>
+          </div>
+          <div class="w-full bg-slate-950 h-3.5 rounded-full overflow-hidden p-0.5 border border-slate-800">
+            <div class="bg-gradient-to-r from-indigo-500 to-purple-400 h-full rounded-full" style="width: 72.5%"></div>
+          </div>
+        </div>
+
+        <!-- Goal 3 -->
+        <div class="space-y-2">
+          <div class="flex justify-between text-sm font-bold">
+            <span class="text-slate-200">🎭 Drama Guild • Spring Musical Stage Props</span>
+            <span class="text-emerald-400">$570 raised / $600 goal (95%)</span>
+          </div>
+          <div class="w-full bg-slate-950 h-3.5 rounded-full overflow-hidden p-0.5 border border-slate-800">
+            <div class="bg-gradient-to-r from-purple-500 to-pink-400 h-full rounded-full" style="width: 95%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Marketplace Items Breakdown Table -->
+      <div class="bg-slate-900/60 rounded-3xl border border-slate-800 overflow-hidden">
+        <div class="p-6 border-b border-slate-800 flex items-center justify-between">
+          <h3 class="font-bold text-white text-base">Active Store Products & Sales</h3>
+          <span class="text-xs text-slate-400">Live Database</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-sm">
+            <thead>
+              <tr class="bg-slate-950/80 text-slate-400 text-xs uppercase font-bold border-b border-slate-800">
+                <th class="py-4 px-6">Product</th>
+                <th class="py-4 px-6">Organization</th>
+                <th class="py-4 px-6">Listing Price</th>
+                <th class="py-4 px-6">Profit / Unit</th>
+                <th class="py-4 px-6">Units Sold</th>
+                <th class="py-4 px-6 text-right">Total Proceeds</th>
+              </tr>
+            </thead>
+            <tbody id="dashboard-table-body" class="divide-y divide-slate-800/60 text-slate-300">
+              <!-- Dynamically Populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: PRODUCT DETAIL OVERLAY -->
+  <div id="product-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
+    <div class="relative w-full max-w-3xl bg-slate-900 rounded-3xl border border-slate-800 shadow-2xl overflow-hidden my-8 animate-fade-in">
+      <button onclick="closeProductModal()" class="absolute top-4 right-4 z-10 w-9 h-9 rounded-full bg-slate-950/80 text-slate-400 hover:text-white border border-slate-800 flex items-center justify-center transition">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="grid grid-cols-1 md:grid-cols-2">
+        <!-- Image Preview -->
+        <div class="relative aspect-square bg-slate-950 flex items-center justify-center p-6">
+          <img id="modal-img" src="" alt="Product Detail" class="w-full h-full object-cover rounded-xl" />
+          <div className="absolute bottom-4 left-4">
+            <span id="modal-badge-club" class="text-xs font-bold uppercase tracking-wider bg-indigo-600/90 text-white px-3 py-1 rounded-lg backdrop-blur-md shadow-md">
+              Club
+            </span>
+          </div>
+        </div>
+
+        <!-- Info & Actions -->
+        <div class="p-6 sm:p-8 flex flex-col justify-between space-y-6">
+          <div class="space-y-4">
+            
+            <div class="flex items-center gap-3 bg-slate-950/60 p-3 rounded-2xl border border-slate-800">
+              <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-pink-500 flex items-center justify-center font-bold text-xs text-white">
+                ST
+              </div>
+              <div>
+                <p class="text-[10px] text-slate-400">Created by Student Lead</p>
+                <p id="modal-creator" class="text-xs font-bold text-slate-200">Alex Rivera</p>
+              </div>
+            </div>
+
+            <div>
+              <h2 id="modal-title" class="text-xl sm:text-2xl font-black text-white">Product Title</h2>
+              <p id="modal-school" class="text-xs text-slate-400 mt-1">School Name</p>
+            </div>
+
+            <div class="flex items-baseline gap-3">
+              <span id="modal-price" class="text-3xl font-black text-white">$0.00</span>
+              <span id="modal-profit-badge" class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
+                +$0.00 to club
+              </span>
+            </div>
+
+            <p id="modal-description" class="text-slate-300 text-xs sm:text-sm leading-relaxed">
+              Description text here...
+            </p>
+
+            <!-- Color Options -->
+            <div class="space-y-2">
+              <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Apparel Color</label>
+              <div id="modal-color-options" class="flex items-center gap-3">
+                <!-- Dynamic color circles -->
+              </div>
+            </div>
+
+            <!-- Size Options -->
+            <div class="space-y-2">
+              <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Select Size</label>
+              <div id="modal-size-options" class="flex flex-wrap gap-2">
+                <!-- Size pills -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Add to Cart CTA -->
+          <div class="space-y-3 pt-4 border-t border-slate-800">
+            <button onclick="addModalItemToCart()" class="w-full py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm transition shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2">
+              <i class="fa-solid fa-cart-plus"></i>
+              <span>Add To Cart</span>
+            </button>
+            <p class="text-center text-[11px] text-slate-500 flex items-center justify-center gap-1">
+              <i class="fa-solid fa-location-dot text-indigo-400"></i>
+              <span>Free Pickup at Student Union Center</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DRAWER: SLIDE-OVER SHOPPING CART -->
+  <div id="cart-drawer" class="hidden fixed inset-0 z-50 overflow-hidden bg-slate-950/80 backdrop-blur-xs transition-opacity">
+    <div class="absolute inset-y-0 right-0 max-w-full flex pl-10">
+      <div class="w-screen max-w-md bg-slate-900 border-l border-slate-800 shadow-2xl flex flex-col justify-between">
+        
+        <!-- Cart Header -->
+        <div class="p-6 border-b border-slate-800 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-bag-shopping text-indigo-400 text-lg"></i>
+            <h2 class="text-lg font-bold text-white">Your Campus Bag</h2>
+            <span id="drawer-item-count" class="text-xs bg-slate-800 text-slate-300 font-bold px-2 py-0.5 rounded-full">0</span>
+          </div>
+          <button onclick="toggleCart(false)" class="p-2 rounded-xl bg-slate-950 hover:bg-slate-800 text-slate-400 hover:text-white transition">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <!-- Cart Item List -->
+        <div id="cart-items-container" class="flex-1 overflow-y-auto p-6 space-y-4">
+          <!-- Dynamically Populated -->
+        </div>
+
+        <!-- Cart Checkout Footer -->
+        <div id="cart-footer" class="p-6 border-t border-slate-800 space-y-4 bg-slate-950/90">
+          
+          <!-- Pickup Location -->
+          <div class="space-y-1.5">
+            <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Campus Fulfillment Spot</label>
+            <select id="pickup-location" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+              <option value="Student Union Room 102">Student Union Room 102 (Free)</option>
+              <option value="Campus Library Plaza Desk">Library Plaza Information Desk (Free)</option>
+              <option value="Dorm Delivery">On-Campus Dorm Delivery (+$2.50)</option>
+            </select>
+          </div>
+
+          <!-- Promo Code Form -->
+          <div class="flex gap-2">
+            <input type="text" id="promo-input" placeholder="Promo (CAMPUS10)" class="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white uppercase focus:outline-none focus:border-indigo-500" />
+            <button onclick="applyPromoCode()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition">Apply</button>
+          </div>
+
+          <!-- Totals -->
+          <div class="space-y-1.5 text-xs text-slate-400 pt-2 border-t border-slate-800/80">
+            <div class="flex justify-between">
+              <span>Subtotal</span>
+              <span id="cart-subtotal" class="text-white font-semibold">$0.00</span>
+            </div>
+            <div id="promo-discount-row" class="hidden flex justify-between text-emerald-400 font-semibold">
+              <span>Student Discount (10%)</span>
+              <span id="cart-discount">-$0.00</span>
+            </div>
+            <div class="flex justify-between text-sm font-black text-white pt-2 border-t border-slate-800">
+              <span>Total</span>
+              <span id="cart-final-total" class="text-indigo-400">$0.00</span>
+            </div>
+          </div>
+
+          <!-- Checkout Action -->
+          <button onclick="processCheckout()" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-black text-sm shadow-lg shadow-indigo-600/30 transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-lock"></i>
+            <span>Confirm & Get Campus QR Pickup</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CHECKOUT CONFIRMATION & QR CODE RECEIPT -->
+  <div id="checkout-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+    <div class="relative w-full max-w-md bg-slate-900 rounded-3xl border border-slate-800 p-8 shadow-2xl text-center space-y-5">
+      <div class="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-2xl mx-auto">
+        <i class="fa-solid fa-check"></i>
+      </div>
+
+      <div class="space-y-1">
+        <h3 class="text-2xl font-black text-white">Order Confirmed!</h3>
+        <p class="text-xs text-slate-400">Thank you for supporting student clubs!</p>
+      </div>
+
+      <!-- QR Code Placeholder Simulation -->
+      <div class="bg-white p-4 rounded-2xl max-w-[180px] mx-auto shadow-inner space-y-2">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=CAMPUS-MERCH-ORDER-9821" alt="Order QR Pickup Code" class="w-full h-auto mx-auto" />
+        <p class="text-[10px] font-mono text-slate-800 font-bold">ORD-#9821-CAMPUS</p>
+      </div>
+
+      <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-left text-xs space-y-1">
+        <p class="text-slate-400">Pickup Location:</p>
+        <p id="receipt-location" class="font-bold text-indigo-300">Student Union Room 102</p>
+        <p class="text-[10px] text-slate-500 pt-1">Show this QR badge to the student volunteer upon pickup.</p>
+      </div>
+
+      <button onclick="closeCheckoutModal()" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs transition">
+        Done & Back to Store
+      </button>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast-container" class="fixed bottom-6 right-6 z-50 space-y-2 pointer-events-none"></div>
+
+  <!-- JAVASCRIPT STATE LOGIC -->
+  <script>
+    /* =========================================================================
+       INITIAL MOCK DATA & APP STATE
+       ========================================================================= */
+    const INITIAL_PRODUCTS = [
+      {
+        id: 'p-1',
+        title: 'Senior Class \'26 Vintage Heavy Hoodie',
+        category: 'Hoodies',
+        school: 'Westbridge High',
+        club: 'Class of 2026',
+        price: 48.00,
+        costToMake: 22.00,
+        fundraisePerUnit: 26.00,
+        badge: 'Popular',
+        image: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80',
+        colors: ['#090d16', '#1e3a8a', '#065f46'],
+        sizes: ['XS', 'S', 'M', 'L', 'XL', '2XL'],
+        creator: 'Maya Lin (Senior VP)',
+        description: 'Heavyweight 400 GSM premium cotton hoodie with embroidered vintage varsity lettering. Features a double-lined hood and spacious kangaroo pocket.',
+        salesCount: 112
+      },
+      {
+        id: 'p-2',
+        title: 'Robotics State Finals Cap',
+        category: 'Caps',
+        school: 'Oakridge Tech',
+        club: 'Robotics Team',
+        price: 25.00,
+        costToMake: 10.00,
+        fundraisePerUnit: 15.00,
+        badge: 'Fundraiser',
+        image: 'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&w=800&q=80',
+        colors: ['#090d16', '#1e3a8a'],
+        sizes: ['One Size'],
+        creator: 'Alex Chen (Captain)',
+        description: 'Structured 6-panel hat featuring high-density 3D gear logo stitching. Adjustable brass buckle closure.',
+        salesCount: 68
+      },
+      {
+        id: 'p-3',
+        title: 'Eco-Canvas Campus Tote Bag',
+        category: 'Tote Bags',
+        school: 'Westbridge High',
+        club: 'Eco Club',
+        price: 18.00,
+        costToMake: 6.00,
+        fundraisePerUnit: 12.00,
+        badge: 'On-Campus Pickup',
+        image: 'https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=800&q=80',
+        colors: ['#f8fafc', '#065f46'],
+        sizes: ['One Size'],
+        creator: 'Sarah Jenkins',
+        description: '100% organic unbleached canvas tote. Reinforced straps capable of carrying heavy textbooks and laptop.',
+        salesCount: 145
+      },
+      {
+        id: 'p-4',
+        title: 'Esports League Champion Jersey',
+        category: 'T-Shirts',
+        school: 'Oakridge Tech',
+        club: 'Esports League',
+        price: 32.00,
+        costToMake: 14.00,
+        fundraisePerUnit: 18.00,
+        badge: 'Limited Drop',
+        image: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=800&q=80',
+        colors: ['#581c87', '#090d16'],
+        sizes: ['S', 'M', 'L', 'XL'],
+        creator: 'David Miller',
+        description: 'Breathable moisture-wicking athletic polyester jersey. Custom cyber gradient artwork.',
+        salesCount: 89
+      },
+      {
+        id: 'p-5',
+        title: 'Drama Guild Retro Acid-Wash Tee',
+        category: 'T-Shirts',
+        school: 'Westbridge High',
+        club: 'Drama Guild',
+        price: 26.00,
+        costToMake: 11.00,
+        fundraisePerUnit: 15.00,
+        badge: 'Fundraiser',
+        image: 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=800&q=80',
+        colors: ['#090d16', '#991b1b'],
+        sizes: ['S', 'M', 'L', 'XL', '2XL'],
+        creator: 'Elena Rostova',
+        description: 'Ultra-soft ring-spun cotton with custom vintage acid-wash finish and theatrical mask graphic.',
+        salesCount: 54
+      },
+      {
+        id: 'p-6',
+        title: 'Vinyl Laptop Sticker Pack (5-Pack)',
+        category: 'Stickers',
+        school: 'Westbridge High',
+        club: 'Art Honor Society',
+        price: 12.00,
+        costToMake: 3.00,
+        fundraisePerUnit: 9.00,
+        badge: 'Student Creator',
+        image: 'https://images.unsplash.com/photo-1572375992501-4b0892d50c69?auto=format&fit=crop&w=800&q=80',
+        colors: ['#f8fafc'],
+        sizes: ['Standard Pack'],
+        creator: 'Chloe Bennett',
+        description: 'Waterproof die-cut vinyl stickers designed by student digital artists. Scratch and weather resistant.',
+        salesCount: 220
+      }
+    ];
+
+    const CATEGORIES = ['All Categories', 'Hoodies', 'T-Shirts', 'Caps', 'Tote Bags', 'Drinkware', 'Stickers'];
+
+    // State Variables
+    let products = [...INITIAL_PRODUCTS];
+    let cart = [];
+    let selectedCategory = 'All Categories';
+    let currentSelectedProduct = null;
+    let currentSelectedColor = null;
+    let currentSelectedSize = null;
+    let isPromoApplied = false;
+
+    // Studio Customizer Live State
+    let studioState = {
+      color: '#090d16',
+      icon: 'fa-robot',
+      category: 'Hoodies'
+    };
+
+    /* =========================================================================
+       DOM INITIALIZATION & LISTENERS
+       ========================================================================= */
+    document.addEventListener('DOMContentLoaded', () => {
+      renderCategoryPills();
+      renderProducts();
+      renderDashboardTable();
+      updateStudioPreview();
+    });
+
+    /* =========================================================================
+       NAVIGATION TAB SWITCHER
+       ========================================================================= */
+    function switchTab(tab) {
+      document.getElementById('view-shop').classList.add('hidden');
+      document.getElementById('view-studio').classList.add('hidden');
+      document.getElementById('view-dashboard').classList.add('hidden');
+
+      // Reset Nav Styles
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.className = 'nav-btn flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 text-slate-400 hover:text-white hover:bg-slate-800/60';
+      });
+
+      const activeNav = document.getElementById(`nav-${tab}`);
+      if (activeNav) {
+        activeNav.className = 'nav-btn flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md shadow-indigo-500/20';
+      }
+
+      document.getElementById(`view-${tab}`).classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* =========================================================================
+       STOREFRONT FILTERING & RENDERING
+       ========================================================================= */
+    function renderCategoryPills() {
+      const container = document.getElementById('category-pills');
+      container.innerHTML = CATEGORIES.map(cat => `
+        <button
+          onclick="selectCategory('${cat}')"
+          class="px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
+            selectedCategory === cat
+              ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20'
+              : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800'
+          }"
+        >
+          ${cat}
+        </button>
+      `).join('');
+    }
+
+    function selectCategory(cat) {
+      selectedCategory = cat;
+      renderCategoryPills();
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const query = document.getElementById('search-input').value.toLowerCase();
+      const selectedClub = document.getElementById('filter-club').value;
+      const sortBy = document.getElementById('filter-sort').value;
+
+      let filtered = products.filter(p => {
+        const matchesQuery = p.title.toLowerCase().includes(query) || 
+                             p.club.toLowerCase().includes(query) || 
+                             p.school.toLowerCase().includes(query);
+        const matchesCategory = selectedCategory === 'All Categories' || p.category === selectedCategory;
+        const matchesClub = selectedClub === 'ALL' || p.club === selectedClub;
+
+        return matchesQuery && matchesCategory && matchesClub;
+      });
+
+      // Sorting
+      filtered.sort((a, b) => {
+        if (sortBy === 'popular') return b.salesCount - a.salesCount;
+        if (sortBy === 'price-low') return a.price - b.price;
+        if (sortBy === 'price-high') return b.price - a.price;
+        if (sortBy === 'fundraise') return b.fundraisePerUnit - a.fundraisePerUnit;
+        return 0;
+      });
+
+      renderProducts(filtered);
+    }
+
+    function resetFilters() {
+      document.getElementById('search-input').value = '';
+      document.getElementById('filter-club').value = 'ALL';
+      document.getElementById('filter-sort').value = 'popular';
+      selectedCategory = 'All Categories';
+      renderCategoryPills();
+      renderProducts(products);
+    }
+
+    function renderProducts(itemsToRender = products) {
+      const grid = document.getElementById('product-grid');
+      const emptyState = document.getElementById('empty-state');
+
+      if (itemsToRender.length === 0) {
+        grid.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      grid.innerHTML = itemsToRender.map(product => `
+        <div class="group bg-slate-900/70 hover:bg-slate-900 rounded-2xl border border-slate-800/80 hover:border-indigo-500/40 transition-all duration-300 overflow-hidden flex flex-col justify-between shadow-lg hover:shadow-2xl hover:shadow-indigo-500/10">
+          
+          <!-- Image Header -->
+          <div class="relative aspect-square overflow-hidden bg-slate-950 cursor-pointer" onclick="openProductModal('${product.id}')">
+            <img src="${product.image}" alt="${product.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            
+            <div class="absolute top-3 left-3">
+              <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg backdrop-blur-md border shadow-sm bg-indigo-500/80 text-white border-indigo-400/30">
+                ${product.badge}
+              </span>
+            </div>
+
+            <div class="absolute bottom-3 left-3 right-3 bg-slate-950/80 backdrop-blur-md border border-slate-800 px-3 py-1.5 rounded-xl flex items-center justify-between text-xs text-slate-300">
+              <span class="font-semibold text-indigo-300 truncate">${product.club}</span>
+              <span class="text-[10px] text-slate-400">${product.school}</span>
+            </div>
+          </div>
+
+          <!-- Product Details -->
+          <div class="p-5 space-y-3 flex-1 flex flex-col justify-between">
+            <div>
+              <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">${product.category}</span>
+              <h3 onclick="openProductModal('${product.id}')" class="font-bold text-slate-100 text-base line-clamp-1 hover:text-indigo-400 transition cursor-pointer mt-0.5">
+                ${product.title}
+              </h3>
+              <p class="text-xs text-slate-400 line-clamp-2 mt-1">${product.description}</p>
+            </div>
+
+            <div class="pt-3 border-t border-slate-800/80 space-y-3">
+              <div class="flex items-baseline justify-between">
+                <span class="text-xl font-black text-white">$${product.price.toFixed(2)}</span>
+                <span class="text-[10px] uppercase font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                  +$${product.fundraisePerUnit.toFixed(2)} to club
+                </span>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <button onclick="openProductModal('${product.id}')" class="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition">
+                  Details
+                </button>
+                <button onclick="quickAddToCart('${product.id}')" class="p-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white transition shadow-md shadow-indigo-600/20" title="Quick Add">
+                  <i class="fa-solid fa-cart-plus"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    /* =========================================================================
+       DESIGN STUDIO LIVE CREATOR LOGIC
+       ========================================================================= */
+    function setStudioColor(hex) {
+      studioState.color = hex;
+      document.getElementById('studio-canvas').style.backgroundColor = hex;
+    }
+
+    function updateStudioPreview() {
+      const school = document.getElementById('studio-school').value || 'WESTBRIDGE HIGH';
+      const text = document.getElementById('studio-text').value || 'YOUR DESIGN';
+      const club = document.getElementById('studio-club').value || 'Club Merch';
+      const category = document.getElementById('studio-category').value;
+      const icon = document.getElementById('studio-icon').value;
+      const price = parseFloat(document.getElementById('studio-price').value);
+
+      // Base costs lookup
+      const baseCosts = {
+        'Hoodies': 20,
+        'T-Shirts': 12,
+        'Caps': 10,
+        'Tote Bags': 8,
+        'Drinkware': 12,
+        'Stickers': 3
+      };
+
+      const cost = baseCosts[category] || 15;
+      const profit = Math.max(0, price - cost);
+
+      // Update Canvas Elements
+      document.getElementById('studio-preview-school').innerText = school.toUpperCase();
+      document.getElementById('studio-preview-text').innerText = text.toUpperCase();
+      document.getElementById('studio-preview-logo').innerHTML = `<i class="fa-solid ${icon}"></i>`;
+      document.getElementById('studio-preview-tag').innerText = `${category} • Live Sample`;
+
+      // Update apparel icon backdrop
+      const apparelIconMap = {
+        'Hoodies': 'fa-shirt',
+        'T-Shirts': 'fa-shirt',
+        'Caps': 'fa-graduation-cap',
+        'Tote Bags': 'fa-bag-shopping',
+        'Drinkware': 'fa-bottle-water',
+        'Stickers': 'fa-note-sticky'
+      };
+      document.getElementById('studio-apparel-icon').innerHTML = `<i class="fa-solid ${apparelIconMap[category] || 'fa-shirt'}"></i>`;
+
+      // Update Financials
+      document.getElementById('price-slider-val').innerText = `$${price.toFixed(2)}`;
+      document.getElementById('calc-price').innerText = `$${price.toFixed(2)}`;
+      document.getElementById('calc-cost').innerText = `$${cost.toFixed(2)}`;
+      document.getElementById('calc-profit').innerText = `+$${profit.toFixed(2)}`;
+    }
+
+    function publishStudioItem(event) {
+      event.preventDefault();
+
+      const title = document.getElementById('studio-title').value;
+      const school = document.getElementById('studio-school').value;
+      const club = document.getElementById('studio-club').value;
+      const category = document.getElementById('studio-category').value;
+      const price = parseFloat(document.getElementById('studio-price').value);
+      const creator = document.getElementById('studio-creator').value;
+
+      const baseCosts = { 'Hoodies': 20, 'T-Shirts': 12, 'Caps': 10, 'Tote Bags': 8, 'Drinkware': 12, 'Stickers': 3 };
+      const cost = baseCosts[category] || 15;
+      const profit = price - cost;
+
+      const newProduct = {
+        id: `p-${Date.now()}`,
+        title: title,
+        category: category,
+        school: school,
+        club: club,
+        price: price,
+        costToMake: cost,
+        fundraisePerUnit: profit,
+        badge: 'Student Creator',
+        image: category === 'Hoodies' ? 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80' :
+               category === 'Caps' ? 'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&w=800&q=80' :
+               'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=800&q=80',
+        colors: [studioState.color, '#090d16', '#f8fafc'],
+        sizes: ['S', 'M', 'L', 'XL'],
+        creator: creator,
+        description: `Official ${club} custom merchandise drop. Pre-order now to support our student goals!`,
+        salesCount: 0
+      };
+
+      products.unshift(newProduct);
+      renderProducts();
+      renderDashboardTable();
+      showToast(`🚀 Published "${title}" to the live store!`);
+      switchTab('shop');
+    }
+
+    /* =========================================================================
+       PRODUCT DETAIL MODAL LOGIC
+       ========================================================================= */
+    function openProductModal(id) {
+      const product = products.find(p => p.id === id);
+      if (!product) return;
+
+      currentSelectedProduct = product;
+      currentSelectedColor = product.colors[0];
+      currentSelectedSize = product.sizes[0];
+
+      document.getElementById('modal-img').src = product.image;
+      document.getElementById('modal-badge-club').innerText = product.club;
+      document.getElementById('modal-creator').innerText = product.creator;
+      document.getElementById('modal-title').innerText = product.title;
+      document.getElementById('modal-school').innerText = `${product.school} • ${product.category}`;
+      document.getElementById('modal-price').innerText = `$${product.price.toFixed(2)}`;
+      document.getElementById('modal-profit-badge').innerText = `+$${product.fundraisePerUnit.toFixed(2)} to ${product.club}`;
+      document.getElementById('modal-description').innerText = product.description;
+
+      // Color pickers
+      document.getElementById('modal-color-options').innerHTML = product.colors.map(c => `
+        <button
+          onclick="selectModalColor('${c}')"
+          class="modal-color-btn w-8 h-8 rounded-full border-2 transition-transform ${c === currentSelectedColor ? 'scale-110 border-indigo-400 ring-2 ring-indigo-500/40' : 'border-slate-800'}"
+          style="background-color: ${c}"
+        ></button>
+      `).join('');
+
+      // Size pills
+      document.getElementById('modal-size-options').innerHTML = product.sizes.map(s => `
+        <button
+          onclick="selectModalSize('${s}')"
+          class="modal-size-btn px-3.5 py-1.5 rounded-xl text-xs font-bold border transition ${s === currentSelectedSize ? 'bg-indigo-600 border-indigo-500 text-white' : 'bg-slate-950 border-slate-800 text-slate-300'}"
+        >
+          ${s}
+        </button>
+      `).join('');
+
+      document.getElementById('product-modal').classList.remove('hidden');
+    }
+
+    function selectModalColor(c) {
+      currentSelectedColor = c;
+      document.querySelectorAll('.modal-color-btn').forEach(btn => {
+        btn.classList.remove('scale-110', 'border-indigo-400', 'ring-2', 'ring-indigo-500/40');
+      });
+      event.target.classList.add('scale-110', 'border-indigo-400', 'ring-2', 'ring-indigo-500/40');
+    }
+
+    function selectModalSize(s) {
+      currentSelectedSize = s;
+      document.querySelectorAll('.modal-size-btn').forEach(btn => {
+        btn.className = 'modal-size-btn px-3.5 py-1.5 rounded-xl text-xs font-bold border transition bg-slate-950 border-slate-800 text-slate-300';
+      });
+      event.target.className = 'modal-size-btn px-3.5 py-1.5 rounded-xl text-xs font-bold border transition bg-indigo-600 border-indigo-500 text-white';
+    }
+
+    function closeProductModal() {
+      document.getElementById('product-modal').classList.add('hidden');
+    }
+
+    function addModalItemToCart() {
+      if (!currentSelectedProduct) return;
+      addToCart(currentSelectedProduct, currentSelectedColor, currentSelectedSize);
+      closeProductModal();
+    }
+
+    /* =========================================================================
+       CART & CHECKOUT LOGIC
+       ========================================================================= */
+    function quickAddToCart(id) {
+      const product = products.find(p => p.id === id);
+      if (product) {
+        addToCart(product, product.colors[0], product.sizes[0]);
+      }
+    }
+
+    function addToCart(product, color, size) {
+      const existing = cart.find(i => i.id === product.id && i.color === color && i.size === size);
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        cart.push({
+          ...product,
+          color: color,
+          size: size,
+          quantity: 1
+        });
+      }
+
+      updateCartUI();
+      showToast(`Added "${product.title}" to cart!`);
+    }
+
+    function toggleCart(open) {
+      const drawer = document.getElementById('cart-drawer');
+      if (open) {
+        drawer.classList.remove('hidden');
+      } else {
+        drawer.classList.add('hidden');
+      }
+    }
+
+    function updateCartUI() {
+      const container = document.getElementById('cart-items-container');
+      const badgeCount = document.getElementById('cart-badge-count');
+      const drawerCount = document.getElementById('drawer-item-count');
+
+      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+      // Badge
+      if (totalItems > 0) {
+        badgeCount.innerText = totalItems;
+        badgeCount.classList.remove('hidden');
+      } else {
+        badgeCount.classList.add('hidden');
+      }
+      drawerCount.innerText = totalItems;
+
+      if (cart.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-16 space-y-3">
+            <i class="fa-solid fa-cart-shopping text-4xl text-slate-700"></i>
+            <p class="text-slate-400 text-sm font-semibold">Your campus bag is empty</p>
+            <p class="text-slate-500 text-xs">Explore student merch drops to support local clubs!</p>
+          </div>
+        `;
+        document.getElementById('cart-subtotal').innerText = '$0.00';
+        document.getElementById('cart-final-total').innerText = '$0.00';
+        return;
+      }
+
+      // Render Cart Items
+      container.innerHTML = cart.map((item, idx) => `
+        <div class="flex items-center gap-3 bg-slate-950/60 p-3 rounded-2xl border border-slate-800">
+          <img src="${item.image}" alt="" class="w-14 h-14 rounded-xl object-cover bg-slate-900 shrink-0" />
+          
+          <div class="flex-1 min-w-0 space-y-0.5">
+            <h4 class="text-xs font-bold text-white truncate">${item.title}</h4>
+            <p class="text-[10px] text-indigo-400 font-semibold">${item.club}</p>
+            <div class="flex items-center gap-2 text-[10px] text-slate-400">
+              <span>Size: ${item.size}</span>
+            </div>
+          </div>
+
+          <div class="flex flex-col items-end gap-1">
+            <span class="text-xs font-black text-white">$${(item.price * item.quantity).toFixed(2)}</span>
+            <div class="flex items-center gap-2 bg-slate-900 border border-slate-800 rounded-lg px-2 py-0.5">
+              <button onclick="updateQty(${idx}, -1)" class="text-slate-400 hover:text-white text-xs font-bold">-</button>
+              <span class="text-xs font-bold text-white">${item.quantity}</span>
+              <button onclick="updateQty(${idx}, 1)" class="text-slate-400 hover:text-white text-xs font-bold">+</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      calculateCartTotals();
+    }
+
+    function updateQty(idx, delta) {
+      cart[idx].quantity += delta;
+      if (cart[idx].quantity <= 0) {
+        cart.splice(idx, 1);
+      }
+      updateCartUI();
+    }
+
+    function calculateCartTotals() {
+      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const discount = isPromoApplied ? subtotal * 0.10 : 0;
+      const total = Math.max(0, subtotal - discount);
+
+      document.getElementById('cart-subtotal').innerText = `$${subtotal.toFixed(2)}`;
+      document.getElementById('cart-discount').innerText = `-$${discount.toFixed(2)}`;
+      document.getElementById('cart-final-total').innerText = `$${total.toFixed(2)}`;
+    }
+
+    function applyPromoCode() {
+      const code = document.getElementById('promo-input').value.trim().toUpperCase();
+      if (code === 'CAMPUS10' || code === 'GOSTUDENTS') {
+        isPromoApplied = true;
+        document.getElementById('promo-discount-row').classList.remove('hidden');
+        calculateCartTotals();
+        showToast('🎉 10% Student Discount Applied!');
+      } else {
+        showToast('❌ Invalid code. Try CAMPUS10');
+      }
+    }
+
+    function processCheckout() {
+      if (cart.length === 0) return;
+
+      const location = document.getElementById('pickup-location').value;
+      document.getElementById('receipt-location').innerText = location;
+
+      // Update Sales counts for dashboard
+      cart.forEach(item => {
+        const prod = products.find(p => p.id === item.id);
+        if (prod) {
+          prod.salesCount = (prod.salesCount || 0) + item.quantity;
+        }
+      });
+
+      cart = [];
+      updateCartUI();
+      toggleCart(false);
+      renderDashboardTable();
+
+      document.getElementById('checkout-modal').classList.remove('hidden');
+    }
+
+    function closeCheckoutModal() {
+      document.getElementById('checkout-modal').classList.add('hidden');
+    }
+
+    /* =========================================================================
+       DASHBOARD TABLE LOGIC
+       ========================================================================= */
+    function renderDashboardTable() {
+      const tbody = document.getElementById('dashboard-table-body');
+      
+      let totalRaised = 0;
+      let totalUnits = 0;
+
+      tbody.innerHTML = products.map(p => {
+        const sales = p.salesCount || 0;
+        const totalProfit = sales * p.fundraisePerUnit;
+        totalRaised += totalProfit;
+        totalUnits += sales;
+
+        return `
+          <tr class="hover:bg-slate-800/40 transition">
+            <td class="py-4 px-6 font-semibold text-white flex items-center gap-3">
+              <img src="${p.image}" class="w-9 h-9 rounded-lg object-cover" />
+              <span class="truncate max-w-xs">${p.title}</span>
+            </td>
+            <td class="py-4 px-6">
+              <span class="bg-slate-800 px-2.5 py-1 rounded-lg text-xs font-medium text-indigo-300 border border-slate-700">
+                ${p.club}
+              </span>
+            </td>
+            <td class="py-4 px-6 font-bold text-white">$${p.price.toFixed(2)}</td>
+            <td class="py-4 px-6 text-emerald-400 font-semibold">+$${p.fundraisePerUnit.toFixed(2)}</td>
+            <td class="py-4 px-6 font-bold">${sales}</td>
+            <td class="py-4 px-6 text-right font-black text-emerald-400">$${totalProfit.toFixed(2)}</td>
+          </tr>
+        `;
+      }).join('');
+
+      document.getElementById('dash-total-raised').innerText = `$${totalRaised.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+      document.getElementById('dash-units-sold').innerText = `${totalUnits} Units`;
+    }
+
+    /* =========================================================================
+       TOAST NOTIFICATION HELPER
+       ========================================================================= */
+    function showToast(msg) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'flex items-center gap-2 bg-slate-900 text-white px-4 py-3 rounded-2xl border border-indigo-500/40 shadow-2xl text-xs font-medium animate-bounce pointer-events-auto';
+      toast.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400 text-sm"></i> <span>${msg}</span>`;
+
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.remove();
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
